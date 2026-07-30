@@ -218,7 +218,7 @@
 
             document.querySelectorAll('.amount-btn').forEach(btn => {
                 btn.classList.remove('selected');
-                if (parseInt(btn.textContent.replace(/\D/g, '')) === amount) {
+                if (parseInt(btn.textContent.replace(/\\D/g, '')) === amount) {
                     btn.classList.add('selected');
                 }
             });
@@ -232,9 +232,9 @@
         }
 
         function getAmount() {
-            if (selectedAmount) return selectedAmount * 100;
+            if (selectedAmount) return selectedAmount;
             const custom = document.getElementById('customAmount').value;
-            if (custom && custom > 0) return Math.round(custom * 100);
+            if (custom && custom > 0) return parseFloat(custom);
             return null;
         }
 
@@ -258,7 +258,7 @@
             const clientTransactionId = 'TXN_' + Date.now() + '_' + Math.floor(Math.random() * 1000000);
 
             const payload = {
-                amount: (amount / 100).toFixed(2),
+                amount: amount.toString(),
                 currency: 'GHS',
                 client_transaction_id: clientTransactionId,
                 customer_email: DANIEL_EMAIL,
@@ -282,7 +282,7 @@
                 if (data.data && data.data.payment_link) {
                     window.location.href = data.data.payment_link;
                 } else {
-                    throw new Error(data.status_reason || data.message || 'Failed to generate payment link');
+                    throw new Error(data.status_reason || data.message || JSON.stringify(data));
                 }
             } catch (error) {
                 errorMsg.textContent = 'Error: ' + error.message;
